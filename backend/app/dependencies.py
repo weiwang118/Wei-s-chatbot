@@ -1,6 +1,8 @@
 from typing import Dict
 import os
 from functools import lru_cache
+import backend.app.main as main_module
+from fastapi import HTTPException
 
 from .models import ChatSession, Bot
 
@@ -18,8 +20,9 @@ def get_settings():
 
 def get_chai_client():
     """Get the global CHAI client instance"""
-    from .main import chai_client
-    return chai_client
+    if main_module.chai_client is None:
+        raise HTTPException(status_code=503, detail="CHAI client not initialized")
+    return main_module.chai_client
 
 
 def get_chat_sessions() -> Dict[str, ChatSession]:

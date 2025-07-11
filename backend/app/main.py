@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from typing import Dict
 import os
 import logging
+from fastapi.responses import JSONResponse
 from datetime import datetime
 
 from .chai_client import ChaiAPIClient
@@ -82,6 +83,7 @@ async def health_check():
 app.include_router(chat.router, prefix="/api/chat", tags=["chat"])
 
 
+
 # WebSocket endpoint for real-time chat
 @app.websocket("/ws/chat/{session_id}")
 async def websocket_chat(websocket: WebSocket, session_id: str):
@@ -146,19 +148,25 @@ async def websocket_chat(websocket: WebSocket, session_id: str):
 # Error handlers
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request, exc):
-    return {
-        "error": exc.detail,
-        "status_code": exc.status_code
-    }
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error": exc.detail,
+            "status_code": exc.status_code
+        }
+    )
 
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request, exc):
     logger.error(f"Unhandled exception: {exc}")
-    return {
-        "error": "Internal server error",
-        "status_code": 500
-    }
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal server error",
+            "status_code": 500
+        }
+    )
 
 
 if __name__ == "__main__":

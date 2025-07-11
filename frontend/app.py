@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 from datetime import datetime
-import json
 
 # Configuration
 API_BASE_URL = "http://localhost:8000/api"
@@ -20,7 +19,7 @@ st.markdown("""
 /* Import beautiful fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-/* Global styling with modern aesthetics */
+/* Global styling */
 * {
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -29,11 +28,7 @@ st.markdown("""
 .main {
     padding-top: 0.5rem;
     background: linear-gradient(135deg, 
-        #667eea 0%, 
-        #764ba2 25%, 
-        #f093fb 50%, 
-        #f5576c 75%, 
-        #4facfe 100%);
+        #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
     min-height: 100vh;
     position: relative;
 }
@@ -78,12 +73,7 @@ st.markdown("""
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     animation: shimmer 3s infinite;
 }
 
@@ -92,7 +82,7 @@ st.markdown("""
     100% { left: 100%; }
 }
 
-/* Enhanced premium sidebar with multiple gradients and effects */
+/* Enhanced premium sidebar */
 section[data-testid="stSidebar"] {
     background: linear-gradient(135deg, 
         rgba(102, 126, 234, 0.15) 0%, 
@@ -103,51 +93,11 @@ section[data-testid="stSidebar"] {
     backdrop-filter: blur(25px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
     border-right: 2px solid rgba(255, 255, 255, 0.4) !important;
-    position: relative !important;
-    box-shadow: 
-        2px 0 20px rgba(102, 126, 234, 0.1),
-        inset -1px 0 0 rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 2px 0 20px rgba(102, 126, 234, 0.1), inset -1px 0 0 rgba(255, 255, 255, 0.3) !important;
 }
 
-/* Add animated gradient overlay to sidebar */
-section[data-testid="stSidebar"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 10% 20%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 90% 80%, rgba(240, 147, 251, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(79, 172, 254, 0.05) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-    animation: sidebar-glow 8s ease-in-out infinite alternate;
-}
-
-@keyframes sidebar-glow {
-    0% { opacity: 0.6; }
-    100% { opacity: 1; }
-}
-
-/* Ensure sidebar content is above the overlay */
-section[data-testid="stSidebar"] > div {
-    position: relative;
-    z-index: 1;
-}
-
-/* All sidebar text should be dark for readability */
 section[data-testid="stSidebar"] * {
     color: #262626 !important;
-}
-
-/* Sidebar buttons styling */
-section[data-testid="stSidebar"] .stButton > button {
-    background: rgba(255, 255, 255, 0.4) !important;
-    color: #262626 !important;
-    border: 1px solid rgba(255, 255, 255, 0.6) !important;
-    font-weight: 600;
 }
 
 /* Stunning chat messages */
@@ -165,7 +115,6 @@ section[data-testid="stSidebar"] .stButton > button {
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
 }
 
-/* Beautiful user messages */
 .stChatMessage[data-testid="user"] {
     background: linear-gradient(135deg, 
         rgba(102, 126, 234, 0.9) 0%, 
@@ -173,12 +122,6 @@ section[data-testid="stSidebar"] .stButton > button {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.stChatMessage[data-testid="user"] .stMarkdown {
-    color: white;
-    font-weight: 500;
-}
-
-/* Gorgeous assistant messages */
 .stChatMessage[data-testid="assistant"] {
     background: linear-gradient(135deg, 
         rgba(240, 147, 251, 0.9) 0%, 
@@ -186,15 +129,15 @@ section[data-testid="stSidebar"] .stButton > button {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.stChatMessage[data-testid="assistant"] .stMarkdown {
+.stChatMessage .stMarkdown {
     color: white;
     font-weight: 500;
 }
 
-/* Elegant button styling */
+/* Button styling */
 .stButton > button {
     border-radius: 16px;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.25) 0%, 
         rgba(255, 255, 255, 0.1) 100%);
@@ -203,8 +146,6 @@ section[data-testid="stSidebar"] .stButton > button {
     font-weight: 600;
     padding: 12px 20px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Poppins', sans-serif;
-    border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -216,34 +157,44 @@ section[data-testid="stSidebar"] .stButton > button {
         rgba(255, 255, 255, 0.2) 100%);
 }
 
-/* Premium primary buttons */
 .stButton > button[kind="primary"] {
-    background: linear-gradient(135deg, 
-        #ff6b6b 0%, 
-        #feca57 50%, 
-        #48dbfb 100%);
+    background: linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #48dbfb 100%);
     box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
     border: none;
 }
 
 .stButton > button[kind="primary"]:hover {
-    background: linear-gradient(135deg, 
-        #ff8787 0%, 
-        #fed330 50%, 
-        #0abde3 100%);
+    background: linear-gradient(135deg, #ff8787 0%, #fed330 50%, #0abde3 100%);
     box-shadow: 0 12px 35px rgba(255, 107, 107, 0.6);
 }
 
-/* Elegant secondary buttons */
 .stButton > button[kind="secondary"] {
     background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.2) 0%, 
-        rgba(255, 255, 255, 0.1) 100%);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+        rgba(255, 255, 255, 0.4) 0%, 
+        rgba(255, 255, 255, 0.3) 100%) !important;
+    color: #1a1a1a !important;
+    border: 2px solid rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(15px) !important;
+    font-weight: 700 !important;
+    text-shadow: none !important;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
 }
 
-/* Beautiful input styling */
+.stButton > button[kind="secondary"]:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.6) 0%, 
+        rgba(255, 255, 255, 0.5) 100%) !important;
+    border-color: rgba(255, 255, 255, 0.8) !important;
+    transform: translateY(-2px) !important;
+    color: #0a0a0a !important;
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Input styling */
 .stTextInput > div > div > input {
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -265,7 +216,7 @@ section[data-testid="stSidebar"] .stButton > button {
     background: rgba(255, 255, 255, 0.25);
 }
 
-/* Gorgeous selectbox */
+/* Selectbox styling */
 .stSelectbox > div > div {
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.9);
@@ -274,98 +225,7 @@ section[data-testid="stSidebar"] .stButton > button {
     color: #262626;
 }
 
-/* Selectbox selected text */
-.stSelectbox > div > div > div {
-    color: #262626 !important;
-}
-
-/* Selectbox input field */
-.stSelectbox input {
-    color: #262626 !important;
-}
-
-/* Selectbox dropdown options */
-.stSelectbox div[data-baseweb="select"] > div {
-    background: rgba(255, 255, 255, 0.95) !important;
-    color: #262626 !important;
-}
-
-/* Selectbox dropdown menu */
-.stSelectbox div[role="listbox"] {
-    background: rgba(30, 30, 30, 0.85) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
-}
-
-/* Selectbox dropdown options styling */
-.stSelectbox div[role="option"] {
-    background: transparent !important;
-    color: #262626 !important;
-}
-
-.stSelectbox div[role="option"]:hover {
-    background: rgba(102, 126, 234, 0.1) !important;
-    color: #262626 !important;
-}
-
-/* Stunning expander */
-.streamlit-expanderHeader {
-    background: rgba(255, 255, 255, 0.2) !important;
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white !important;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.streamlit-expanderHeader:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-    transform: translateY(-1px);
-}
-
-.streamlit-expanderContent {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px);
-    border-radius: 0 0 16px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-top: none;
-}
-
-/* High contrast text for sidebar readability - multiple selectors */
-.css-1d391kg .stMarkdown, 
-.css-1d391kg .stText,
-.css-1d391kg label,
-.css-1d391kg .stSubheader,
-.css-1d391kg .stInfo,
-section[data-testid="stSidebar"] .stMarkdown, 
-section[data-testid="stSidebar"] .stText,
-section[data-testid="stSidebar"] label,
-section[data-testid="stSidebar"] .stSubheader,
-section[data-testid="stSidebar"] .stInfo,
-div[data-testid="stSidebar"] .stMarkdown, 
-div[data-testid="stSidebar"] .stText,
-div[data-testid="stSidebar"] label,
-div[data-testid="stSidebar"] .stSubheader,
-div[data-testid="stSidebar"] .stInfo {
-    color: #262626 !important;
-    font-weight: 600;
-    text-shadow: none;
-}
-
-/* Elegant info boxes */
-.css-1d391kg .stInfo {
-    background: linear-gradient(135deg, 
-        rgba(102, 126, 234, 0.3) 0%, 
-        rgba(118, 75, 162, 0.3) 100%) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    color: white !important;
-    border-radius: 16px;
-}
-
-/* Stunning welcome screen */
+/* Welcome screen */
 .welcome-container {
     text-align: center;
     padding: 3rem;
@@ -382,7 +242,7 @@ div[data-testid="stSidebar"] .stInfo {
     overflow: hidden;
 }
 
-/* Gorgeous personality badges */
+/* Personality badges */
 .personality-badge {
     display: inline-block;
     padding: 8px 16px;
@@ -400,16 +260,82 @@ div[data-testid="stSidebar"] .stInfo {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Premium chat input */
-.stChatInputContainer {
-    border-radius: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+/* Premium chat input with glassmorphism */
+.stChatInputContainer,
+div[data-testid="stChatInputContainer"] {
+    border-radius: 30px !important;
+    border: 3px solid rgba(255, 255, 255, 0.5) !important;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.3) 100%) !important;
+    backdrop-filter: blur(30px) saturate(200%) brightness(1.1) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(200%) brightness(1.1) !important;
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        0 4px 15px rgba(102, 126, 234, 0.1),
+        inset 0 2px 0 rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Enhanced premium sidebar header with gradient and animations */
+.stChatInputContainer > div,
+div[data-testid="stChatInputContainer"] > div {
+    background: transparent !important;
+}
+
+/* Chat input text fields */
+.stChatInputContainer input[type="text"],
+.stChatInputContainer textarea,
+div[data-testid="stChatInputContainer"] input[type="text"],
+div[data-testid="stChatInputContainer"] textarea {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.25) 0%, 
+        rgba(255, 255, 255, 0.15) 100%) !important;
+    backdrop-filter: blur(15px) saturate(150%) !important;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 25px !important;
+    color: white !important;
+    padding: 12px 20px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    width: 60% !important;
+    max-width: 60% !important;
+    resize: none !important;
+}
+
+.stChatInputContainer input:focus,
+.stChatInputContainer textarea:focus {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    outline: none !important;
+}
+
+.stChatInputContainer input::placeholder,
+.stChatInputContainer textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Chat input send button */
+.stChatInputContainer button {
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.9) 0%, 
+        rgba(118, 75, 162, 0.9) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 50% !important;
+    color: white !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+}
+
+.stChatInputContainer button:hover {
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 1) 0%, 
+        rgba(118, 75, 162, 1) 100%) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+}
+
+/* Sidebar header */
 .sidebar-header {
     background: linear-gradient(135deg, 
         rgba(102, 126, 234, 0.4) 0%, 
@@ -424,202 +350,23 @@ div[data-testid="stSidebar"] .stInfo {
     font-weight: bold;
     box-shadow: 
         0 12px 40px rgba(102, 126, 234, 0.2),
-        0 4px 15px rgba(240, 147, 251, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.5);
     border: 2px solid rgba(255, 255, 255, 0.4);
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.sidebar-header:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-        0 16px 50px rgba(102, 126, 234, 0.3),
-        0 6px 20px rgba(240, 147, 251, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-.sidebar-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.3),
-        transparent
-    );
-    animation: sidebar-shimmer 4s infinite;
-}
-
-@keyframes sidebar-shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
-/* Beautiful status indicators */
-.status-online {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
-    border-radius: 50%;
-    margin-right: 0.5rem;
-    animation: pulse-glow 2s infinite;
-    box-shadow: 0 0 15px rgba(0, 210, 255, 0.8);
-}
-
-@keyframes pulse-glow {
-    0% { 
-        opacity: 1; 
-        box-shadow: 0 0 15px rgba(0, 210, 255, 0.8);
-        transform: scale(1);
-    }
-    50% { 
-        opacity: 0.8; 
-        box-shadow: 0 0 25px rgba(0, 210, 255, 1);
-        transform: scale(1.1);
-    }
-    100% { 
-        opacity: 1; 
-        box-shadow: 0 0 15px rgba(0, 210, 255, 0.8);
-        transform: scale(1);
-    }
-}
-
-/* Elegant typing indicator */
-.typing-indicator {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-style: italic;
-}
-
-.typing-dots {
-    display: inline-flex;
-    margin-left: 0.5rem;
-}
-
-.typing-dots span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    margin: 0 2px;
-    animation: typing-bounce 1.4s infinite ease-in-out;
-    box-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
-}
-
-.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes typing-bounce {
-    0%, 80%, 100% { 
-        transform: scale(0); 
-        opacity: 0.5; 
-    }
-    40% { 
-        transform: scale(1); 
-        opacity: 1; 
-    }
-}
-
-/* Premium text styling */
-h1, h2, h3, h4, h5, h6 {
-    color: white !important;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-p, div, span {
-    color: rgba(255, 255, 255, 0.95) !important;
-}
-
-/* Sidebar text styling with dark colors for readability */
-.css-1d391kg h1, 
-.css-1d391kg h2, 
-.css-1d391kg h3, 
-.css-1d391kg h4, 
-.css-1d391kg h5, 
-.css-1d391kg h6 {
+/* Sidebar styling for dark text */
+.css-1d391kg .stMarkdown, 
+.css-1d391kg .stText,
+.css-1d391kg label,
+section[data-testid="stSidebar"] .stMarkdown, 
+section[data-testid="stSidebar"] .stText,
+section[data-testid="stSidebar"] label {
     color: #262626 !important;
-    font-weight: 700;
+    font-weight: 600;
 }
 
-.css-1d391kg p, 
-.css-1d391kg div, 
-.css-1d391kg span,
-.css-1d391kg .stMarkdown p {
-    color: #262626 !important;
-}
-
-/* Enhanced sidebar input styling with premium effects */
-.css-1d391kg .stTextInput label,
-.css-1d391kg .stSelectbox label,
-.css-1d391kg .stTextArea label {
-    color: #1a1a1a !important;
-    font-weight: 700;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px !important;
-}
-
-/* Beautiful sidebar text inputs */
-.css-1d391kg .stTextInput > div > div > input {
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.4) 0%, 
-        rgba(255, 255, 255, 0.3) 100%) !important;
-    backdrop-filter: blur(15px) saturate(150%) !important;
-    border: 2px solid rgba(255, 255, 255, 0.5) !important;
-    border-radius: 16px !important;
-    color: #1a1a1a !important;
-    font-weight: 600 !important;
-    padding: 12px 16px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
-}
-
-.css-1d391kg .stTextInput > div > div > input:focus {
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.6) 0%, 
-        rgba(255, 255, 255, 0.5) 100%) !important;
-    border-color: rgba(102, 126, 234, 0.7) !important;
-    box-shadow: 
-        0 0 0 3px rgba(102, 126, 234, 0.2),
-        0 6px 20px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-    transform: translateY(-1px) !important;
-}
-
-.css-1d391kg .stTextInput > div > div > input::placeholder {
-    color: rgba(26, 26, 26, 0.6) !important;
-    font-weight: 500 !important;
-}
-
-/* Beautiful sidebar selectbox */
-.css-1d391kg .stSelectbox > div > div {
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.4) 0%, 
-        rgba(255, 255, 255, 0.3) 100%) !important;
-    backdrop-filter: blur(15px) saturate(150%) !important;
-    border: 2px solid rgba(255, 255, 255, 0.5) !important;
-    border-radius: 16px !important;
-    color: #1a1a1a !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
-}
-
-/* Beautiful sidebar textarea */
+/* Sidebar inputs */
+.css-1d391kg .stTextInput > div > div > input,
 .css-1d391kg .stTextArea > div > div > textarea {
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.4) 0%, 
@@ -630,33 +377,10 @@ p, div, span {
     color: #1a1a1a !important;
     font-weight: 600 !important;
     padding: 12px 16px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
 }
 
-.css-1d391kg .stTextArea > div > div > textarea:focus {
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.6) 0%, 
-        rgba(255, 255, 255, 0.5) 100%) !important;
-    border-color: rgba(102, 126, 234, 0.7) !important;
-    box-shadow: 
-        0 0 0 3px rgba(102, 126, 234, 0.2),
-        0 6px 20px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-    transform: translateY(-1px) !important;
-}
-
-.css-1d391kg .stTextArea > div > div > textarea::placeholder {
-    color: rgba(26, 26, 26, 0.6) !important;
-    font-weight: 500 !important;
-}
-
-/* Enhanced sidebar session buttons with premium styling */
+/* Sidebar buttons */
 .css-1d391kg .stButton > button {
-    width: 100%;
-    text-align: left;
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.35) 0%, 
         rgba(255, 255, 255, 0.25) 50%,
@@ -664,52 +388,26 @@ p, div, span {
     backdrop-filter: blur(15px) saturate(150%);
     border: 2px solid rgba(255, 255, 255, 0.6);
     color: #1a1a1a;
-    padding: 14px 18px;
     border-radius: 18px;
     font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 8px;
-    box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-.css-1d391kg .stButton > button:hover {
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.55) 0%, 
-        rgba(255, 255, 255, 0.45) 50%,
-        rgba(255, 255, 255, 0.55) 100%);
-    transform: translateX(8px) translateY(-2px);
-    box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.15),
-        0 4px 10px rgba(102, 126, 234, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    border-color: rgba(102, 126, 234, 0.6);
-    color: #0a0a0a;
+/* Text styling */
+h1, h2, h3, h4, h5, h6 {
+    color: white !important;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.css-1d391kg .stButton > button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(102, 126, 234, 0.2),
-        transparent
-    );
-    transition: left 0.5s ease;
+p, div, span {
+    color: rgba(255, 255, 255, 0.95) !important;
 }
 
-.css-1d391kg .stButton > button:hover::before {
-    left: 100%;
+/* Force textarea width - simplified approach */
+textarea {
+    width: 60% !important;
+    max-width: 60% !important;
+    min-width: 60% !important;
 }
 
 /* Hide Streamlit elements */
@@ -739,42 +437,6 @@ header {visibility: hidden;}
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.4) 0%, 
         rgba(255, 255, 255, 0.2) 100%);
-}
-
-/* Floating animations */
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
-
-.floating {
-    animation: float 3s ease-in-out infinite;
-}
-
-/* Magical background particles */
-.particle {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    pointer-events: none;
-    animation: particle-float 8s infinite linear;
-}
-
-@keyframes particle-float {
-    0% {
-        transform: translateY(100vh) scale(0);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100vh) scale(1);
-        opacity: 0;
-    }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -901,18 +563,41 @@ def main():
             bot_name = st.text_input("🤖 Bot Name", value="Assistant", help="Give your AI friend a name")
             user_name = st.text_input("👤 Your Name", value="User", help="How should the bot address you?")
             
-            # Personality selection with descriptions
+            # Enhanced personality selection with cards
             st.write("🎭 **Choose Personality:**")
-            personality = st.selectbox(
-                "Select a personality type",
-                list(PERSONALITY_INFO.keys()),
-                format_func=lambda x: f"{PERSONALITY_INFO[x]['emoji']} {x.title()}"
-            )
             
-            # Show personality description
-            if personality in PERSONALITY_INFO:
-                st.info(f"💡 {PERSONALITY_INFO[personality]['desc']}")
+            # Initialize personality if not set
+            if "selected_personality" not in st.session_state:
+                st.session_state.selected_personality = "friendly"
             
+            # Create personality cards in a grid
+            personality_keys = list(PERSONALITY_INFO.keys())
+            rows = [personality_keys[i:i+2] for i in range(0, len(personality_keys), 2)]
+            
+            for row in rows:
+                cols = st.columns(len(row))
+                for idx, personality_key in enumerate(row):
+                    with cols[idx]:
+                        info = PERSONALITY_INFO[personality_key]
+                        # Check if this personality is selected
+                        is_selected = st.session_state.selected_personality == personality_key
+                        
+                        # Create a styled button that looks like a card
+                        button_style = "primary" if is_selected else "secondary"
+                        
+                        if st.button(
+                            f"{info['emoji']} **{personality_key.title()}**\n\n{info['desc'][:45]}{'...' if len(info['desc']) > 45 else ''}",
+                            key=f"personality_{personality_key}",
+                            type=button_style,
+                            use_container_width=True,
+                            help=f"Select {personality_key} personality: {info['desc']}"
+                        ):
+                            st.session_state.selected_personality = personality_key
+                            st.rerun()
+            
+            # Set the selected personality for the session creation
+            personality = st.session_state.selected_personality
+
             custom_prompt = st.text_area("💬 Custom Instructions (Optional)", 
                                        help="Add specific instructions for your AI friend")
 
@@ -976,12 +661,11 @@ def main():
         if current_session:
             # Chat header with back button
             col1, col2 = st.columns([1, 5])
-            with col1:
-                if st.button("← Back", type="secondary", help="Return to home page"):
+            if st.button("← Back", type="secondary", help="Return to home page"):
                     st.session_state.current_session_id = None
                     st.session_state.messages = []
                     st.rerun()
-            
+
             with col2:
                 st.markdown(f"""
                 <div style="display: flex; align-items: center; margin-top: 8px;">
