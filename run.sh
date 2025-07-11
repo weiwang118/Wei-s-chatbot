@@ -6,7 +6,7 @@ echo "🚀 Starting CHAI Chat Interface..."
 
 # Install dependencies
 echo "Installing dependencies..."
-pip install -r requirements.txt
+pip install -r frontend/requirements.txt
 
 # Start backend
 echo "Starting backend..."
