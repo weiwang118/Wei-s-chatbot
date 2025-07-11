@@ -294,11 +294,10 @@ div[data-testid="stChatInputContainer"] textarea {
     backdrop-filter: blur(15px) saturate(150%) !important;
     border: 2px solid rgba(255, 255, 255, 0.4) !important;
     border-radius: 25px !important;
-    color: white !important;
+    color: black !important;
     padding: 12px 20px !important;
     font-weight: 500 !important;
     font-size: 14px !important;
-    width: 60% !important;
     max-width: 60% !important;
     resize: none !important;
 }
